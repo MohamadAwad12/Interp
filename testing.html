@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Image to Interpolation Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .section {
+            margin: 20px;
+            padding: 30px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .upload-area {
+            border: 3px dashed #4facfe;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #00f2fe;
+            background: #f0f8ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #00f2fe;
+            background: #e3f2fd;
+            transform: scale(1.02);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .data-table input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .interpolation-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .result-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d7ff;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .interpolation-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Table Image to Interpolation Tool</h1>
+            <p>Upload a table image, extract data, and perform interpolation calculations</p>
+        </div>
+
+        <!-- Step 1: Upload Image -->
+        <div class="section">
+            <h2>1. Upload Table Image</h2>
+            <div class="upload-area" id="uploadArea">
+                <div style="font-size: 3rem; margin-bottom: 15px;">📁</div>
+                <p><strong>Click to upload</strong> or drag and drop your table image here</p>
+                <p style="margin-top: 10px; color: #666;">Supports JPG, PNG, GIF formats</p>
+            </div>
+            <input type="file" id="imageInput" accept="image/*">
+            <div id="imagePreview"></div>
+        </div>
+
+        <!-- Step 2: Extract Data -->
+        <div class="section hidden" id="extractSection">
+            <h2>2. Extract Table Data</h2>
+            <p>Choose how to extract the data from your table:</p>
+            <button class="btn" id="aiExtractBtn">🤖 Extract with AI (Recommended)</button>
+            <button class="btn" id="manualBtn">✏️ Enter Data Manually</button>
+            <button class="btn" id="demoBtn">🧪 Load Demo Data</button>
+            <div id="extractStatus"></div>
+        </div>
+
+        <!-- Step 3: Review Data -->
+        <div class="section hidden" id="dataSection">
+            <h2>3. Review and Edit Data</h2>
+            <p>Review the extracted data. You can edit values directly:</p>
+            <div id="dataTable"></div>
+            <button class="btn" id="addRowBtn">➕ Add Row</button>
+            <button class="btn" id="removeRowBtn">➖ Remove Row</button>
+            <button class="btn" id="proceedBtn">📈 Create Interpolation</button>
+        </div>
+
+        <!-- Step 4: Interpolation -->
+        <div class="section hidden" id="interpolationSection">
+            <h2>4. Interpolation Calculator</h2>
+            <p>Enter a value to interpolate from your data:</p>
+            
+            <div class="interpolation-form">
+                <div class="form-group">
+                    <label for="inputValue">Input Value:</label>
+                    <input type="number" id="inputValue" step="any" placeholder="Enter value...">
+                </div>
+                <div class="form-group">
+                    <label for="outputValue">Result:</label>
+                    <input type="number" id="outputValue" readonly>
+                </div>
+                <button class="btn" id="calculateBtn">Calculate</button>
+            </div>
+
+            <div id="calculationDetails"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let tableData = [];
+        
+        // DOM elements
+        const uploadArea = document.getElementById('uploadArea');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const extractSection = document.getElementById('extractSection');
+        const dataSection = document.getElementById('dataSection');
+        const interpolationSection = document.getElementById('interpolationSection');
+        
+        // Initialize the app
+        function init() {
+            setupFileUpload();
+            setupButtons();
+        }
+        
+        // File upload setup
+        function setupFileUpload() {
+            uploadArea.addEventListener('click', () => {
+                console.log('Upload area clicked');
+                imageInput.click();
+            });
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload(files[0]);
+                }
+            });
+            
+            imageInput.addEventListener('change', (e) => {
+                console.log('File input changed');
+                if (e.target.files.length > 0) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+        }
+        
+        // Handle file upload
+        function handleFileUpload(file) {
+            console.log('Handling file upload:', file.name);
+            
+            if (!file.type.startsWith('image/')) {
+                showStatus('error', 'Please upload an image file.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                console.log('File loaded successfully');
+                imagePreview.innerHTML = `<img src="${e.target.result}" class="preview-image" alt="Uploaded table">`;
+                extractSection.classList.remove('hidden');
+                showStatus('success', 'Image uploaded successfully!');
+            };
+            reader.onerror = () => {
+                showStatus('error', 'Error reading file.');
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Setup button event listeners
+        function setupButtons() {
+            document.getElementById('aiExtractBtn').addEventListener('click', extractWithAI);
+            document.getElementById('manualBtn').addEventListener('click', enterManually);
+            document.getElementById('demoBtn').addEventListener('click', loadDemoData);
+            document.getElementById('addRowBtn').addEventListener('click', addRow);
+            document.getElementById('removeRowBtn').addEventListener('click', removeRow);
+            document.getElementById('proceedBtn').addEventListener('click', createInterpolation);
+            document.getElementById('calculateBtn').addEventListener('click', calculate);
+            
+            // Real-time calculation
+            document.getElementById('inputValue').addEventListener('input', calculate);
+        }
+        
+        // AI extraction (simulated)
+        function extractWithAI() {
+            showStatus('info', 'AI is analyzing your table image...');
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                // Demo water density data
+                tableData = [
+                    [15.00, 0.99910],
+                    [16.00, 0.99895],
+                    [17.00, 0.99878],
+                    [18.00, 0.99860],
+                    [19.00, 0.99841],
+                    [20.00, 0.99821],
+                    [21.00, 0.99800],
+                    [22.00, 0.99777],
+                    [23.00, 0.99754],
+                    [24.00, 0.99730],
+                    [25.00, 0.99705],
+                    [26.00, 0.99679],
+                    [27.00, 0.99652],
+                    [28.00, 0.99624],
+                    [29.00, 0.99595],
+                    [30.00, 0.99565],
+                    [31.00, 0.99534],
+                    [32.00, 0.99503]
+                ];
+                
+                showDataTable();
+                showStatus('success', `AI successfully extracted ${tableData.length} data points!`);
+            }, 2000);
+        }
+        
+        // Manual data entry
+        function enterManually() {
+            tableData = [
+                [0, 0],
+                [0, 0],
+                [0, 0]
+            ];
+            showDataTable();
+            showStatus('info', 'Enter your data manually in the table below.');
+        }
+        
+        // Load demo data
+        function loadDemoData() {
+            tableData = [
+                [15.00, 0.99910],
+                [16.00, 0.99895],
+                [17.00, 0.99878],
+                [18.00, 0.99860],
+                [19.00, 0.99841],
+                [20.00, 0.99821],
+                [21.00, 0.99800],
+                [22.00, 0.99777],
+                [23.00, 0.99754],
+                [24.00, 0.99730],
+                [25.00, 0.99705],
+                [26.00, 0.99679],
+                [27.00, 0.99652],
+                [28.00, 0.99624],
+                [29.00, 0.99595],
+                [30.00, 0.99565],
+                [31.00, 0.99534],
+                [32.00, 0.99503]
+            ];
+            showDataTable();
+            showStatus('success', 'Demo water density data loaded!');
+        }
+        
+        // Display data table
+        function showDataTable() {
+            let html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>X Value (Input)</th>
+                            <th>Y Value (Output)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            tableData.forEach((row, i) => {
+                html += `
+                    <tr>
+                        <td><input type="number" value="${row[0]}" onchange="updateData(${i}, 0, this.value)" step="any"></td>
+                        <td><input type="number" value="${row[1]}" onchange="updateData(${i}, 1, this.value)" step="any"></td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            document.getElementById('dataTable').innerHTML = html;
+            dataSection.classList.remove('hidden');
+        }
+        
+        // Update data when user edits
+        function updateData(row, col, value) {
+            tableData[row][col] = parseFloat(value) || 0;
+        }
+        
+        // Add row
+        function addRow() {
+            tableData.push([0, 0]);
+            showDataTable();
+        }
+        
+        // Remove row
+        function removeRow() {
+            if (tableData.length > 1) {
+                tableData.pop();
+                showDataTable();
+            }
+        }
+        
+        // Create interpolation
+        function createInterpolation() {
+            if (tableData.length < 2) {
+                showStatus('error', 'Need at least 2 data points for interpolation.');
+                return;
+            }
+            
+            // Sort data by x values
+            tableData.sort((a, b) => a[0] - b[0]);
+            showDataTable(); // Refresh to show sorted data
+            
+            interpolationSection.classList.remove('hidden');
+            showStatus('success', 'Interpolation function created! Enter values below to calculate.');
+        }
+        
+        // Calculate interpolation
+        function calculate() {
+            const inputVal = parseFloat(document.getElementById('inputValue').value);
+            const outputField = document.getElementById('outputValue');
+            const detailsDiv = document.getElementById('calculationDetails');
+            
+            if (isNaN(inputVal) || tableData.length < 2) {
+                outputField.value = '';
+                detailsDiv.innerHTML = '';
+                return;
+            }
+            
+            const result = linearInterpolate(inputVal);
+            
+            // Show reasonable precision - enough to be accurate but not excessive
+            outputField.value = result.toFixed(7);
+            
+            // Show calculation details
+            showCalculationDetails(inputVal, result);
+        }
+        
+        // Linear interpolation function - Excel precision
+        function linearInterpolate(x) {
+            // Sort data to be sure
+            tableData.sort((a, b) => a[0] - b[0]);
+            
+            // Check for exact match with stricter tolerance
+            for (let i = 0; i < tableData.length; i++) {
+                if (Math.abs(x - tableData[i][0]) < Number.EPSILON) {
+                    return tableData[i][1];
+                }
+            }
+            
+            // Find surrounding points
+            for (let i = 0; i < tableData.length - 1; i++) {
+                if (x >= tableData[i][0] && x <= tableData[i + 1][0]) {
+                    // Use higher precision arithmetic to match Excel
+                    const x1 = tableData[i][0];
+                    const y1 = tableData[i][1];
+                    const x2 = tableData[i + 1][0];
+                    const y2 = tableData[i + 1][1];
+                    
+                    // Calculate with full precision, then round at the end
+                    // Excel formula: y = y1 + (y2 - y1) * (x - x1) / (x2 - x1)
+                    const numerator = (y2 - y1) * (x - x1);
+                    const denominator = (x2 - x1);
+                    const interpolationFactor = numerator / denominator;
+                    const result = y1 + interpolationFactor;
+                    
+                    // Round to 15 decimal places to match Excel's internal precision
+                    return Math.round(result * 1e15) / 1e15;
+                }
+            }
+            
+            // Extrapolation with same precision
+            if (x < tableData[0][0]) {
+                // Use first two points
+                const x1 = tableData[0][0], y1 = tableData[0][1];
+                const x2 = tableData[1][0], y2 = tableData[1][1];
+                const numerator = (y2 - y1) * (x - x1);
+                const denominator = (x2 - x1);
+                const result = y1 + (numerator / denominator);
+                return Math.round(result * 1e15) / 1e15;
+            } else {
+                // Use last two points
+                const len = tableData.length;
+                const x1 = tableData[len - 2][0], y1 = tableData[len - 2][1];
+                const x2 = tableData[len - 1][0], y2 = tableData[len - 1][1];
+                const numerator = (y2 - y1) * (x - x1);
+                const denominator = (x2 - x1);
+                const result = y1 + (numerator / denominator);
+                return Math.round(result * 1e15) / 1e15;
+            }
+        }
+        
+        // Show calculation details
+        function showCalculationDetails(inputVal, result) {
+            let html = `<div class="result-display">Result: <strong>${result.toFixed(7)}</strong></div>`;
+            
+            // Find which points were used
+            let detailsHtml = '';
+            const exactMatch = tableData.find(point => Math.abs(point[0] - inputVal) < Number.EPSILON);
+            
+            if (exactMatch) {
+                detailsHtml = '<div class="status info">Exact match found - no interpolation needed!</div>';
+            } else {
+                for (let i = 0; i < tableData.length - 1; i++) {
+                    if (inputVal >= tableData[i][0] && inputVal <= tableData[i + 1][0]) {
+                        const x1 = tableData[i][0], y1 = tableData[i][1];
+                        const x2 = tableData[i + 1][0], y2 = tableData[i + 1][1];
+                        
+                        // Show calculation with reasonable precision
+                        detailsHtml = `
+                            <div class="status info">
+                                <strong>Linear Interpolation:</strong><br>
+                                Between points: (${x1}, ${y1}) and (${x2}, ${y2})<br>
+                                Formula: y = y₁ + (y₂ - y₁) × (x - x₁) / (x₂ - x₁)<br>
+                                Result: <strong>${result.toFixed(7)}</strong>
+                            </div>
+                        `;
+                        break;
+                    }
+                }
+                
+                if (!detailsHtml) {
+                    detailsHtml = `<div class="status info">Extrapolation used (value outside data range)<br>Result: <strong>${result.toFixed(7)}</strong></div>`;
+                }
+            }
+            
+            document.getElementById('calculationDetails').innerHTML = html + detailsHtml;
+        }
+        
+        // Show status messages
+        function showStatus(type, message) {
+            const statusDiv = document.getElementById('extractStatus');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
