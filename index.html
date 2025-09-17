@@ -884,6 +884,7 @@
         });
 
         async function loadApiKey() {
+            // First try to load from server
             try {
                 console.log('Attempting to load API key from server...');
                 const response = await fetch('/api/config');
@@ -897,19 +898,29 @@
                 
                 if (config.openaiApiKey) {
                     window.OPENAI_API_KEY = config.openaiApiKey;
-                    console.log('✅ API key loaded successfully');
+                    console.log('✅ API key loaded successfully from server');
                     showAlert('API key loaded successfully', 'success');
+                    return;
                 } else {
                     console.warn('❌ No API key found in server config');
-                    showAlert('No API key found in server configuration', 'error');
                 }
             } catch (error) {
-                console.error('❌ Failed to load API key:', error);
-                showAlert(`Failed to load API key: ${error.message}`, 'error');
-                
-                // Try to load from a different endpoint or show manual input
-                showManualApiKeyInput();
+                console.log('❌ Server not available, trying fallback methods...', error.message);
             }
+            
+            // Fallback: Try to get from URL parameters (for testing)
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlApiKey = urlParams.get('api_key');
+            if (urlApiKey) {
+                window.OPENAI_API_KEY = urlApiKey;
+                console.log('✅ API key loaded from URL parameter');
+                showAlert('API key loaded from URL', 'success');
+                return;
+            }
+            
+            // Fallback: Show manual input
+            console.log('No API key found, showing manual input');
+            showManualApiKeyInput();
         }
 
         function showManualApiKeyInput() {
@@ -1865,7 +1876,8 @@ Be as accurate as possible with the numerical values. Look carefully at axis lab
                 }
                 
                 chart.data.datasets[1].data = curvePoints;
-                chart.data.datasets[1].label = `${method.charAt(0).toUpperCase() + method.slice(1)} Interpolation Curve`;
+                const methodName = method ? method.charAt(0).toUpperCase() + method.slice(1) : 'Linear';
+                chart.data.datasets[1].label = `${methodName} Interpolation Curve`;
             } else {
                 chart.data.datasets[1].data = [];
             }
