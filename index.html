@@ -12,14 +12,15 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a202c;
             line-height: 1.6;
-            color: #2d3748;
-            background: #f7fafc;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 2rem;
         }
@@ -27,136 +28,170 @@
         .header {
             text-align: center;
             margin-bottom: 3rem;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            color: #1a202c;
-            margin-bottom: 0.5rem;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
         }
 
         .header p {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #4a5568;
+            font-weight: 300;
         }
 
         .attribution {
             text-align: center;
             margin-bottom: 2rem;
-            padding: 1rem;
-            background: #edf2f7;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: #718096;
-        }
-
-        .section {
-            background: white;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            color: #718096;
+            font-weight: 500;
         }
 
-        .section h2 {
-            font-size: 1.5rem;
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
             font-weight: 600;
             color: #2d3748;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .upload-zone {
-            border: 3px dashed #cbd5e0;
-            border-radius: 12px;
-            padding: 3rem 2rem;
+        .upload-area {
+            border: 3px dashed #a0aec0;
+            border-radius: 16px;
+            padding: 4rem 2rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: #f7fafc;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            position: relative;
+            overflow: hidden;
         }
 
-        .upload-zone:hover {
-            border-color: #4299e1;
-            background: #ebf8ff;
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upload-area:hover::before {
+            opacity: 1;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
         }
 
         .upload-icon {
             font-size: 4rem;
-            color: #a0aec0;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            color: #667eea;
+            position: relative;
+            z-index: 1;
         }
 
         .upload-text {
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: #4a5568;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
             margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
         }
 
         .upload-subtext {
             color: #718096;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
-        #file-input {
+        .file-input {
             display: none;
         }
 
         .image-preview {
-            margin: 1.5rem 0;
+            margin: 2rem 0;
             text-align: center;
         }
 
-        .preview-img {
+        .preview-image {
             max-width: 100%;
             max-height: 400px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
 
-        .button {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            background: #4299e1;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-            margin: 0.25rem;
-            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0.5rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
-        .button:hover {
-            background: #3182ce;
-            transform: translateY(-1px);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
-        .button.secondary {
-            background: #718096;
+        .btn:active {
+            transform: translateY(0);
         }
 
-        .button.secondary:hover {
-            background: #4a5568;
+        .btn.secondary {
+            background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+            box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);
         }
 
-        .button:disabled {
-            background: #a0aec0;
-            cursor: not-allowed;
-            transform: none;
+        .btn.secondary:hover {
+            box-shadow: 0 8px 25px rgba(113, 128, 150, 0.4);
         }
 
         .controls {
             text-align: center;
-            margin: 1.5rem 0;
+            margin: 2rem 0;
         }
 
         .hidden {
@@ -166,50 +201,53 @@
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 1.5rem 0;
-            border-radius: 8px;
+            margin: 2rem 0;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         .data-table th {
-            background: #4a5568;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 1rem;
+            padding: 1.5rem;
             font-weight: 600;
             text-align: center;
+            font-size: 1.1rem;
         }
 
         .data-table td {
-            padding: 0.75rem;
+            padding: 1rem;
             text-align: center;
             border-bottom: 1px solid #e2e8f0;
+            background: white;
         }
 
-        .data-table tr:nth-child(even) {
+        .data-table tr:nth-child(even) td {
             background: #f7fafc;
         }
 
         .data-table input {
             width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
         }
 
         .data-table input:focus {
             outline: none;
-            border-color: #4299e1;
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .form-group {
@@ -218,72 +256,77 @@
         }
 
         .form-group label {
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: #4a5568;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #2d3748;
+            font-size: 1rem;
         }
 
         .form-group input,
         .form-group select {
-            padding: 0.75rem;
-            border: 1px solid #cbd5e0;
-            border-radius: 6px;
-            font-size: 0.9rem;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #4299e1;
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .result-box {
+        .result-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 2rem;
-            border-radius: 12px;
+            padding: 3rem;
+            border-radius: 20px;
             text-align: center;
-            margin: 1.5rem 0;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
         }
 
         .result-value {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 700;
-            margin: 1rem 0;
-            font-family: 'Courier New', monospace;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
         }
 
         .alert {
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
             border-left: 4px solid;
+            font-weight: 500;
         }
 
         .alert.success {
-            background: #f0fff4;
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
             border-color: #38a169;
             color: #22543d;
         }
 
         .alert.error {
-            background: #fed7d7;
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
             border-color: #e53e3e;
             color: #742a2a;
         }
 
         .alert.info {
-            background: #ebf8ff;
-            border-color: #4299e1;
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+            border-color: #3182ce;
             color: #2a4365;
         }
 
         .spinner {
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #cbd5e0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(66, 153, 225, 0.3);
             border-top: 2px solid #4299e1;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -301,7 +344,11 @@
             }
             
             .header h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
             }
             
             .form-grid {
@@ -315,7 +362,7 @@
         <!-- Header -->
         <div class="header">
             <h1>Table Interpolation Tool</h1>
-            <p>Extract data from table images and calculate interpolated values</p>
+            <p>Advanced AI-powered table data extraction and interpolation</p>
         </div>
 
         <!-- Attribution -->
@@ -323,50 +370,50 @@
             Built by <strong>Mohamad Awad</strong> for CE2070 with Prof. Dragos Andrei
         </div>
 
-        <!-- Step 1: Upload -->
-        <div class="section">
-            <h2>1. Upload Table Image</h2>
+        <!-- Upload Section -->
+        <div class="card">
+            <h2>📤 Upload Table Image</h2>
             
-            <div class="upload-zone" onclick="document.getElementById('file-input').click()">
-                <div class="upload-icon">📊</div>
-                <div class="upload-text">Click to upload table image</div>
-                <div class="upload-subtext">or drag and drop (JPG, PNG, GIF)</div>
+            <div style="text-align: center; margin: 2rem 0;">
+                <button class="btn" onclick="document.getElementById('file-input').click()">
+                    📤 CLICK HERE TO UPLOAD IMAGE
+                </button>
             </div>
-            <input type="file" id="file-input" accept="image/*">
+            <input type="file" id="file-input" class="file-input" accept="image/*" onchange="if(this.files[0]) handleFile(this.files[0]);">
             
             <div id="image-preview" class="image-preview"></div>
             
             <div id="extract-controls" class="controls hidden">
-                <button class="button" onclick="extractWithAI()">🤖 Extract with AI</button>
-                <button class="button secondary" onclick="enterManually()">✏️ Manual Entry</button>
-                <button class="button secondary" onclick="loadDemo()">📋 Load Demo</button>
+                <button class="btn" onclick="extractWithAI()">🤖 Extract with AI</button>
+                <button class="btn secondary" onclick="enterManually()">✏️ Manual Entry</button>
+                <button class="btn secondary" onclick="loadDemo()">📊 Load Demo</button>
             </div>
             
             <div id="status"></div>
         </div>
 
-        <!-- Step 2: Data -->
-        <div id="data-section" class="section hidden">
-            <h2>2. Review Data</h2>
+        <!-- Data Section -->
+        <div id="data-section" class="card hidden">
+            <h2>📋 Review Data</h2>
             
             <div id="data-table"></div>
             
             <div class="controls">
-                <button class="button secondary" onclick="addRow()">+ Add Row</button>
-                <button class="button secondary" onclick="removeRow()">- Remove Row</button>
-                <button class="button" onclick="startInterpolation()">Continue →</button>
+                <button class="btn secondary" onclick="addRow()">➕ Add Row</button>
+                <button class="btn secondary" onclick="removeRow()">➖ Remove Row</button>
+                <button class="btn" onclick="startInterpolation()">🚀 Start Interpolation</button>
             </div>
         </div>
 
-        <!-- Step 3: Interpolation -->
-        <div id="interpolation-section" class="section hidden">
-            <h2>3. Calculate Interpolation</h2>
+        <!-- Interpolation Section -->
+        <div id="interpolation-section" class="card hidden">
+            <h2>📈 Calculate Interpolation</h2>
             
             <div class="form-grid">
                 <div class="form-group">
                     <label>Method</label>
                     <select id="method-select" onchange="calculate()">
-                        <option value="polynomial">Polynomial</option>
+                        <option value="polynomial">Polynomial (Lagrange)</option>
                         <option value="linear">Linear</option>
                         <option value="spline">Cubic Spline</option>
                     </select>
@@ -397,64 +444,31 @@
     </div>
 
     <script>
-        // Global variables
-        const API_KEY =  process.env.OPENAI_API_KEY;
+        // Configuration (hidden from client)
+        const API_KEY = process.env.OPENAI_API_KEY;
         let tableData = [];
 
-        // Initialize drag and drop
-        document.addEventListener('DOMContentLoaded', function() {
-            const uploadZone = document.querySelector('.upload-zone');
-            const fileInput = document.getElementById('file-input');
-
-            // Drag and drop
-            uploadZone.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                uploadZone.style.borderColor = '#4299e1';
-                uploadZone.style.background = '#ebf8ff';
-            });
-
-            uploadZone.addEventListener('dragleave', function() {
-                uploadZone.style.borderColor = '#cbd5e0';
-                uploadZone.style.background = '#f7fafc';
-            });
-
-            uploadZone.addEventListener('drop', function(e) {
-                e.preventDefault();
-                uploadZone.style.borderColor = '#cbd5e0';
-                uploadZone.style.background = '#f7fafc';
-                
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    handleFile(files[0]);
-                }
-            });
-
-            // File input change
-            fileInput.addEventListener('change', function(e) {
-                if (e.target.files.length > 0) {
-                    handleFile(e.target.files[0]);
-                }
-            });
-        });
-
+        // SIMPLE FILE HANDLING - NO COMPLEX LISTENERS
         function handleFile(file) {
+            console.log('File selected:', file.name);
+            
             if (!file.type.startsWith('image/')) {
-                showAlert('error', 'Please select an image file');
+                alert('Please select an image file');
                 return;
             }
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 document.getElementById('image-preview').innerHTML = 
-                    `<img src="${e.target.result}" class="preview-img" alt="Table image">`;
+                    `<img src="${e.target.result}" class="preview-image" alt="Table">`;
                 document.getElementById('extract-controls').classList.remove('hidden');
-                showAlert('success', 'Image uploaded successfully');
+                showAlert('success', 'Image uploaded successfully!');
             };
             reader.readAsDataURL(file);
         }
 
         async function extractWithAI() {
-            const img = document.querySelector('.preview-img');
+            const img = document.querySelector('.preview-image');
             if (!img) {
                 showAlert('error', 'Please upload an image first');
                 return;
@@ -482,7 +496,7 @@
                             role: 'user',
                             content: [{
                                 type: 'text',
-                                text: 'Extract all numerical data from this table. Return only a JSON array of [x,y] pairs like [[1.5, 2.3], [2.0, 4.1]]. Be precise with decimals.'
+                                text: 'Extract numerical data from this table. Return only a JSON array of [x,y] pairs like [[1.5, 2.3], [2.0, 4.1]]. Be precise with decimals.'
                             }, {
                                 type: 'image_url',
                                 image_url: { url: base64 }
@@ -498,9 +512,7 @@
                 const text = result.choices[0].message.content.trim();
                 const data = JSON.parse(text.replace(/```json\n?|\n?```/g, ''));
 
-                if (!Array.isArray(data) || data.length === 0) {
-                    throw new Error('No valid data found');
-                }
+                if (!Array.isArray(data) || data.length === 0) throw new Error('No valid data found');
 
                 tableData = data
                     .filter(row => Array.isArray(row) && row.length >= 2 && 
@@ -510,7 +522,7 @@
                 if (tableData.length === 0) throw new Error('No valid data pairs found');
 
                 showDataTable();
-                showAlert('success', `Extracted ${tableData.length} data points`);
+                showAlert('success', `✨ Extracted ${tableData.length} data points!`);
 
             } catch (error) {
                 showAlert('error', `AI extraction failed: ${error.message}`);
@@ -520,7 +532,7 @@
         function enterManually() {
             tableData = Array(5).fill().map(() => [0, 0]);
             showDataTable();
-            showAlert('info', 'Enter your data manually');
+            showAlert('info', 'Enter your data manually in the table');
         }
 
         function loadDemo() {
@@ -532,7 +544,7 @@
                 [31.00, 0.99534], [32.00, 0.99503]
             ];
             showDataTable();
-            showAlert('success', 'Demo water density data loaded');
+            showAlert('success', '📊 Demo water density data loaded');
         }
 
         function showDataTable() {
@@ -579,7 +591,7 @@
             tableData.sort((a, b) => a[0] - b[0]);
             showDataTable();
             document.getElementById('interpolation-section').classList.remove('hidden');
-            showAlert('success', 'Ready for interpolation');
+            showAlert('success', '🚀 Ready for interpolation!');
         }
 
         function calculate() {
@@ -609,13 +621,13 @@
             output.value = displayResult;
 
             details.innerHTML = `
-                <div class="result-box">
-                    <div>Interpolation Result</div>
+                <div class="result-card">
+                    <div style="font-size: 1.2rem; opacity: 0.9;">Interpolation Result</div>
                     <div class="result-value">${displayResult}</div>
-                    <div>for input ${input}</div>
+                    <div style="font-size: 1.1rem; opacity: 0.8;">for input value ${input}</div>
                 </div>
                 <div class="alert info">
-                    <strong>Method:</strong> ${method}<br>
+                    <strong>Method:</strong> ${method.charAt(0).toUpperCase() + method.slice(1)}<br>
                     <strong>Precision:</strong> ${decimals} decimal places<br>
                     <strong>Raw result:</strong> ${result}
                 </div>
@@ -711,4 +723,3 @@
     </script>
 </body>
 </html>
-
