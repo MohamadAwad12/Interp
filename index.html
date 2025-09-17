@@ -658,6 +658,8 @@
                         <input type="file" id="fileInput" accept="image/*,.pdf" class="visuallyhidden">
                         
                         <div class="input-group" style="margin-top: 15px;">
+                            <label class="input-label">OpenAI API Key</label>
+                            <input type="password" class="input-field" id="apiKeyInput" placeholder="sk-..." style="margin-bottom: 10px;">
                             <button class="btn btn-primary" id="extractButton" onclick="extractDataFromImage()" style="width: 100%;" disabled>
                                 🤖 Extract Data with AI
                             </button>
@@ -872,89 +874,14 @@
         let currentMethod = 'linear';
 
         // Initialize the application
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', function() {
             updateCurrentDate();
             updateMethodInfo();
             updateDataRange();
             initializeChart();
             loadDemoData('water'); // Load demo data by default
-            
-            // Load API key from server
-            await loadApiKey();
         });
 
-        async function loadApiKey() {
-            // First try to load from server
-            try {
-                console.log('Attempting to load API key from server...');
-                const response = await fetch('/api/config');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const config = await response.json();
-                console.log('Server response:', config);
-                
-                if (config.openaiApiKey) {
-                    window.OPENAI_API_KEY = config.openaiApiKey;
-                    console.log('✅ API key loaded successfully from server');
-                    showAlert('API key loaded successfully', 'success');
-                    return;
-                } else {
-                    console.warn('❌ No API key found in server config');
-                }
-            } catch (error) {
-                console.log('❌ Server not available, trying fallback methods...', error.message);
-            }
-            
-            // Fallback: Try to get from URL parameters (for testing)
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlApiKey = urlParams.get('api_key');
-            if (urlApiKey) {
-                window.OPENAI_API_KEY = urlApiKey;
-                console.log('✅ API key loaded from URL parameter');
-                showAlert('API key loaded from URL', 'success');
-                return;
-            }
-            
-            // Fallback: Show manual input
-            console.log('No API key found, showing manual input');
-            showManualApiKeyInput();
-        }
-
-        function showManualApiKeyInput() {
-            const manualInput = document.createElement('div');
-            manualInput.id = 'manualApiKeyInput';
-            manualInput.style.cssText = `
-                margin-top: 15px;
-                padding: 15px;
-                border: 1px solid var(--error);
-                border-radius: 6px;
-                background: #fef2f2;
-            `;
-            manualInput.innerHTML = `
-                <h4 style="margin-bottom: 10px; color: var(--error);">⚠️ API Key Required</h4>
-                <p style="margin-bottom: 10px; font-size: 0.875rem; color: var(--text-secondary);">
-                    Server couldn't provide API key. Please enter it manually:
-                </p>
-                <input type="password" class="input-field" id="manualApiKey" placeholder="sk-..." style="margin-bottom: 10px;">
-                <button class="btn btn-primary" onclick="setManualApiKey()">Set API Key</button>
-            `;
-            
-            document.getElementById('upload-tab').appendChild(manualInput);
-        }
-
-        function setManualApiKey() {
-            const apiKey = document.getElementById('manualApiKey').value.trim();
-            if (apiKey && (apiKey.startsWith('sk-') || apiKey.startsWith('sk-proj-'))) {
-                window.OPENAI_API_KEY = apiKey;
-                showAlert('API key set successfully', 'success');
-                document.getElementById('manualApiKeyInput').remove();
-            } else {
-                showAlert('Please enter a valid OpenAI API key', 'error');
-            }
-        }
 
         // Update current date
         function updateCurrentDate() {
@@ -1030,15 +957,16 @@
         }
 
         function extractDataFromImage() {
-            console.log('Extract button clicked');
-            console.log('Current API key status:', window.OPENAI_API_KEY ? 'Present' : 'Missing');
-            
-            // Get API key from environment variable
-            let apiKey = window.OPENAI_API_KEY;
+            // Get API key from input box
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
             
             if (!apiKey) {
-                console.error('No API key available');
-                showAlert('API key not available. Please check the console for details or enter it manually.', 'error');
+                showAlert('Please enter your OpenAI API key', 'error');
+                return;
+            }
+            
+            if (!apiKey.startsWith('sk-') && !apiKey.startsWith('sk-proj-')) {
+                showAlert('Invalid API key format. Please enter a valid OpenAI API key starting with "sk-" or "sk-proj-"', 'error');
                 return;
             }
 
@@ -1046,8 +974,6 @@
                 showAlert('Please upload an image first', 'error');
                 return;
             }
-
-            console.log('Starting extraction with API key:', apiKey.substring(0, 10) + '...');
 
             // Disable the button during extraction
             const extractButton = document.getElementById('extractButton');
