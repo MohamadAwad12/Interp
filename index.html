@@ -1802,7 +1802,7 @@ Be as accurate as possible with the numerical values. Look carefully at axis lab
                 }
                 
                 chart.data.datasets[1].data = curvePoints;
-                const methodName = method ? method.charAt(0).toUpperCase() + method.slice(1) : 'Linear';
+                const methodName = method && typeof method === 'string' ? method.charAt(0).toUpperCase() + method.slice(1) : 'Linear';
                 chart.data.datasets[1].label = `${methodName} Interpolation Curve`;
             } else {
                 chart.data.datasets[1].data = [];
