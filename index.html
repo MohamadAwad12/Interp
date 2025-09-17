@@ -415,7 +415,6 @@
     <script>
         // Configuration
         const API_KEY = process.env.OPENAI_API_KEY;
-        
         // State
         let tableData = [];
         
@@ -430,30 +429,49 @@
         function setupFileUpload() {
             const uploadArea = document.getElementById('uploadArea');
             const imageInput = document.getElementById('imageInput');
+            const imagePreview = document.getElementById('imagePreview');
             
-            uploadArea.addEventListener('click', () => imageInput.click());
+            // Click to upload
+            uploadArea.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Upload area clicked'); // Debug
+                imageInput.click();
+            });
             
+            // File input change
+            imageInput.addEventListener('change', (e) => {
+                console.log('File input changed:', e.target.files); // Debug
+                if (e.target.files.length > 0) {
+                    handleFile(e.target.files[0]);
+                }
+            });
+            
+            // Drag and drop
             uploadArea.addEventListener('dragover', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 uploadArea.style.borderColor = 'var(--primary)';
                 uploadArea.style.background = '#eff6ff';
             });
             
-            uploadArea.addEventListener('dragleave', () => {
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 uploadArea.style.borderColor = 'var(--primary-light)';
                 uploadArea.style.background = 'var(--bg-gray)';
             });
             
             uploadArea.addEventListener('drop', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 uploadArea.style.borderColor = 'var(--primary-light)';
                 uploadArea.style.background = 'var(--bg-gray)';
+                
                 const files = e.dataTransfer.files;
-                if (files.length > 0) handleFile(files[0]);
-            });
-            
-            imageInput.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) handleFile(e.target.files[0]);
+                console.log('Files dropped:', files); // Debug
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
             });
         }
         
@@ -470,6 +488,8 @@
         }
         
         function handleFile(file) {
+            console.log('Handling file:', file.name, file.type); // Debug
+            
             if (!file.type.startsWith('image/')) {
                 showAlert('error', 'Please select an image file');
                 return;
@@ -477,11 +497,21 @@
             
             const reader = new FileReader();
             reader.onload = (e) => {
-                document.getElementById('imagePreview').innerHTML = 
+                console.log('File loaded successfully'); // Debug
+                const imagePreview = document.getElementById('imagePreview');
+                const extractButtons = document.getElementById('extractButtons');
+                
+                imagePreview.innerHTML = 
                     `<img src="${e.target.result}" class="preview-image" alt="Table image">`;
-                document.getElementById('extractButtons').classList.remove('hidden');
+                extractButtons.classList.remove('hidden');
                 showAlert('success', 'Image uploaded successfully');
             };
+            
+            reader.onerror = (e) => {
+                console.error('File reading error:', e); // Debug
+                showAlert('error', 'Error reading file');
+            };
+            
             reader.readAsDataURL(file);
         }
         
