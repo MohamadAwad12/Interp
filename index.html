@@ -444,9 +444,15 @@
     </div>
 
     <script>
-        // Configuration (hidden from client)
-        const API_KEY = process.env.OPENAI_API_KEY;
+        // Configuration (API key from environment variables)
         let tableData = [];
+        
+        // Get API key from environment or use fallback
+        function getApiKey() {
+            // In production, this should come from your server/environment
+            // For now, you'll need to set this in your deployment platform
+            return process.env.OPENAI_API_KEY || 'your-api-key-here';
+        }
 
         // SIMPLE FILE HANDLING - NO COMPLEX LISTENERS
         function handleFile(file) {
@@ -488,7 +494,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
+                        'Authorization': `Bearer ${getApiKey()}`
                     },
                     body: JSON.stringify({
                         model: 'gpt-4o',
